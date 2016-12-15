@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <windows.h>
 // Программа обработки списка, в которой используется массив структур.
 
 #define MAX 100
+#define LEN 50
 // Это структура для общего списка товаров
 struct item {
 		char type[30]; // Тип товара
@@ -80,13 +82,42 @@ int menu_select(void)
 	} while (c < 0 || c > 4);
 	return c;
 }
-// ВВод адреса в список
+//Считаем кол-во строк в файле
+int sc(FILE *fd) {
+    int result = 1;
+    rewind(fd);
+    while (!ferror(fd) && !feof(fd)) {
+        if (fgetc(fd) == '\n') ++result;
+    }
+    return result;
+}
+// Добавление товара в список
 void enter(void)
  {
 	int slot;
 	char s[80];
 	
 	slot = find_free();
+	
+// Работаем с подгрузкой файла	
+char cArray[LEN];
+        FILE *pTextFile = fopen("sometext.txt", "r");
+        if(pTextFile == NULL)
+        {
+          puts("Возникла непредвиденная ошибка");
+        }
+        
+//        sc(pTextFile) - количество строк в файле
+
+        	while(fgets(cArray, LEN, pTextFile) != NULL)
+        {       	  
+ 			fgets(cArray, LEN, pTextFile);   
+ 			CharToOem(cArray, cArray);
+//			 printf("%s", cArray); 
+        }
+
+        fclose(pTextFile);
+	
 	
 	if(slot==-1) {
 		printf("\n Список заполнен");
@@ -95,7 +126,7 @@ void enter(void)
 	printf("Введите тип товара: ");
 	gets(item_list[slot].type);
 	
-	printf("Введите марку авто: ");
+	printf("\nВведите марку авто: ");
 	gets(item_list[slot].mark);
 	
 	printf("Введите наименование товара: ");
@@ -150,4 +181,4 @@ void list(void)
 	}
 	printf("\n\n");
 }
-// Now we're gonna try to read arrays from some text files.
+// Now we're gonna try to read arrays from some text files.     
