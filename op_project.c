@@ -150,4 +150,4 @@ void list(void)
 	}
 	printf("\n\n");
 }
-
+// Now we're gonna try to read arrays from some text files.
