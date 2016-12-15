@@ -68,7 +68,7 @@ int menu_select(void)
  {
 	char s[80];
 	int c;
-	
+	printf("\n Навигационное меню:\n\n");
 	printf("1. Добавить товар\n");
 	printf("2. Удалить товар\n");
 	printf("3. Вывести товарный список\n");
@@ -135,15 +135,17 @@ void delete(void)
 // Вывод списка на экран
 void list(void) 
 { 
+	printf("\n№\tТип товара\tМарка авто\tНаименование товара\tВ наличии(шт)\tСроки доставки(дн)\n\n");
 	register int t;
 	
 	for(t = 0; t < MAX; ++t) {
 		if(item_list[t].name[0]) {
-			printf("%s\t", item_list[t].type);
-			printf("%s\t", item_list[t].mark);
-			printf("%s\t", item_list[t].name);
-			printf("%s\t", item_list[t].have);
-			printf("%s\t", item_list[t].delivery);
+			printf("%d.\t", t);
+			printf("%s\t\t", item_list[t].type);
+			printf("%s\t\t", item_list[t].mark);
+			printf("%s\t\t", item_list[t].name);
+			printf("%d\t\t", item_list[t].have);
+			printf("%d\t\t\n", item_list[t].delivery);
 		}
 	}
 	printf("\n\n");
