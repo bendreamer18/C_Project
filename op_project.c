@@ -1,51 +1,151 @@
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
+// Программа обработки списка, в которой используется массив структур.
 
-
-const MAX = 100;
+#define MAX 100
 // Это структура для общего списка товаров
-struct ben {
+struct item {
 		char type[30]; // Тип товара
-		int mark; // Марка автомобиля
+		char mark[30]; // Марка автомобиля
 		char name[40]; // Название товара
 		int have; // Количество штук в наличии
 		int delivery; // Доставка в днях
-	};
+	} item_list[MAX];
 	
-	char categories() {
-		//Эта функция выводит список категорий для запчастей.
-		const cat_max = 6;
-		int z;
-		char category[cat_max][20];
-		
-		printf("Доступные категории товара:\n\n");
-		
-		strcpy(category[1], "Аккумуляторы");
-		strcpy(category[2], "Машинные масла");
-		strcpy(category[3], "Кузовные детали");
-		strcpy(category[4], "Глушители и фаркопы");
-		strcpy(category[5], "Авто лампы");
-		for(z = 1; z < cat_max; z++) {
-			printf("%d. %s\n", z, category[z]);
-		}
-		return 0;
-	}
-
-
-int main() {
+	void init_list(void), enter(void);
+	void delete(void), list(void);
+	int menu_select(void), find_free(void);
+	//char categories();
 	
+	// Главная функция
+int main(void) {
 	printf("МАГАЗИН АВТОЗАПЧАСТЕЙ\n\n");
-	struct ben data;
 	
-	categories();
-	
-	// printf("Вот пример структуры.\n\n");
- 	
-	// 	gets(data.type);
-	// 	printf( "The line entered was: %s\n", data.type);
- 	// Считывает строку и записывает ее в переменную "Тип товара". 
- 	// Использовать для функции добавления товара.
-	
-	
+	char choice;
+	init_list(); // Инициализация массива структур
+	for(;;) {
+		choice = menu_select();
+		switch(choice) {
+			case 1: enter();
+			break;
+			case 2: delete();
+			break;
+			case 3: list();
+			break;
+			case 4: exit(0);
+		}
+	}
 	return 0;
 }
+	
+//	char categories() {
+//		//Эта функция выводит список категорий для запчастей.
+//		const cat_max = 6;
+//		int z;
+//		char category[cat_max][20];
+//		
+//		printf("Доступные категории товара:\n\n");
+//		
+//		strcpy(category[1], "Аккумуляторы");
+//		strcpy(category[2], "Машинные масла");
+//		strcpy(category[3], "Кузовные детали");
+//		strcpy(category[4], "Глушители и фаркопы");
+//		strcpy(category[5], "Авто лампы");
+//		for(z = 1; z < cat_max; z++) {
+//			printf("%d. %s\n", z, category[z]);
+//		}
+//		return 0;
+//	}
+	
+// Инициализация списка
+void init_list(void)
+ {
+	register int t; //Регистрационная переменная
+	for(t = 0; t < MAX; ++t) item_list[t].name[0] = '\0';
+}
+// Получение значения выбранного меню
+int menu_select(void)
+ {
+	char s[80];
+	int c;
+	
+	printf("1. Добавить товар\n");
+	printf("2. Удалить товар\n");
+	printf("3. Вывести товарный список\n");
+	printf("4. Выход\n");
+	do {
+		printf("\n Введите номер нужного пункта: ");
+		gets(s);
+		c = atoi(s);
+	} while (c < 0 || c > 4);
+	return c;
+}
+// ВВод адреса в список
+void enter(void)
+ {
+	int slot;
+	char s[80];
+	
+	slot = find_free();
+	
+	if(slot==-1) {
+		printf("\n Список заполнен");
+		return; 
+	}
+	printf("Введите тип товара: ");
+	gets(item_list[slot].type);
+	
+	printf("Введите марку авто: ");
+	gets(item_list[slot].mark);
+	
+	printf("Введите наименование товара: ");
+	gets(item_list[slot].name);
+	
+	printf("Введите кол-во в наличии(шт): ");
+	gets(s);
+	item_list[slot].have = strtoul(s, '\0', 10);
+	
+	printf("Введите дни на доставку: ");
+	gets(s);
+	item_list[slot].delivery = strtoul(s, '\0', 10);
+}
+// Поиск свободной структуры
+int find_free(void) 
+{
+	register int t;
+	
+	for(t = 0; item_list[t].name[0] && t < MAX; ++t);
+	
+	if(t == MAX) return -1; // свободных структур нет
+	return t;
+}
+// Удаление адреса
+void delete(void) 
+{
+	register int slot;
+	char s[80];
+	
+	printf("Введите № записи: ");
+	gets(s);
+	slot = atoi(s);
+	
+	if(slot >= 0 && slot < MAX) 
+	item_list[slot].name[0] = '\0'; // Пустая строка
+	}
+// Вывод списка на экран
+void list(void) 
+{ 
+	register int t;
+	
+	for(t = 0; t < MAX; ++t) {
+		if(item_list[t].name[0]) {
+			printf("%s\t", item_list[t].type);
+			printf("%s\t", item_list[t].mark);
+			printf("%s\t", item_list[t].name);
+			printf("%s\t", item_list[t].have);
+			printf("%s\t", item_list[t].delivery);
+		}
+	}
+	printf("\n\n");
+}
+
