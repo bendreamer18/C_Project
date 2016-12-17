@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+//#include <string.h>
+
 // Программа обработки списка, в которой используется массив структур.
 
 #define MAX 100
-#define LEN 50
+#define LEN 20
 // Это структура для общего списка товаров
 struct item {
 		char type[30]; // Тип товара
@@ -99,46 +101,74 @@ void enter(void)
 	
 	slot = find_free();
 	
-// Работаем с подгрузкой файла	
-char cArray[LEN];
-        FILE *pTextFile = fopen("sometext.txt", "r");
-        if(pTextFile == NULL)
+ //Работаем с подгрузкой файла	
+char typesArray[LEN];
+char marksArray[LEN]; 
+char namesArray[LEN];
+char stockArray[LEN];
+char daysArray[LEN];
+        FILE *fileTypes = fopen("types.txt", "r"); // файл с типами товаров
+		FILE *fileMarks = fopen("marks.txt", "r"); // файл с марками авто
+		FILE *fileNames = fopen("names.txt", "r"); // файл с наименованиями товаров
+		FILE *fileStock = fopen("stock.txt", "r"); // файл с кол-вом в наличии
+		FILE *fileDays = fopen("days.txt", "r"); // файл с днями по доставке
+			        
+        if(fileTypes == NULL)
         {
           puts("Возникла непредвиденная ошибка");
         }
         
-//        sc(pTextFile) - количество строк в файле
-
-        	while(fgets(cArray, LEN, pTextFile) != NULL)
-        {       	  
- 			fgets(cArray, LEN, pTextFile);   
- 			CharToOem(cArray, cArray);
-//			 printf("%s", cArray); 
+//        sc(fileTypes) - количество строк в файле
+		
+		
+       	while(fgets(typesArray, 6, fileTypes) != NULL)
+{			
+			
+ 			fgets(typesArray, 6, fileTypes);   
+ 			CharToOem(typesArray, typesArray); 
+			strcpy(item_list[slot].type , typesArray);
+			
+			fgets(marksArray, 6, fileMarks);   
+			CharToOem(marksArray, marksArray); 
+			strcpy(item_list[slot].mark , marksArray);
+			
+			fgets(namesArray, 6, fileNames);   
+ 			CharToOem(namesArray, namesArray); 
+			strcpy(item_list[slot].name , namesArray);
+			
+			fgets(stockArray, 6, fileStock);   
+ 			item_list[slot].have = strtoul(stockArray, NULL, 10);
+ 			
+ 			fgets(daysArray, 6, fileDays);   
+ 			item_list[slot].delivery = strtoul(daysArray, NULL, 10);
         }
 
-        fclose(pTextFile);
+        fclose(fileTypes);
 	
 	
 	if(slot==-1) {
 		printf("\n Список заполнен");
 		return; 
 	}
-	printf("Введите тип товара: ");
-	gets(item_list[slot].type);
-	
-	printf("\nВведите марку авто: ");
-	gets(item_list[slot].mark);
-	
-	printf("Введите наименование товара: ");
-	gets(item_list[slot].name);
-	
-	printf("Введите кол-во в наличии(шт): ");
-	gets(s);
-	item_list[slot].have = strtoul(s, '\0', 10);
-	
-	printf("Введите дни на доставку: ");
-	gets(s);
-	item_list[slot].delivery = strtoul(s, '\0', 10);
+//	printf("Введите тип товара: ");
+//	gets(item_list[slot].type);
+//	
+//	printf("Введите марку авто: ");
+//	gets(item_list[slot].mark);
+//	
+//	printf("Введите наименование товара: ");
+//	gets(item_list[slot].name);
+//	
+//	printf("Введите кол-во в наличии: ");
+//	gets(s);
+//	item_list[slot].have = strtoul(s, '\0', 10);
+//	
+//	printf("Введите дни на доставку: ");
+//	gets(s);
+//	item_list[slot].delivery = strtoul(s, '\0', 10);
+//	 Работает для присвоения
+//	strcpy(item_list[slot].type , "Egzona");
+//	printf("%s", item_list[slot].type);
 }
 // Поиск свободной структуры
 int find_free(void) 
@@ -171,14 +201,14 @@ void list(void)
 	
 	for(t = 0; t < MAX; ++t) {
 		if(item_list[t].name[0]) {
-			printf("%d.\t", t);
+			printf("%d\t", t);
 			printf("%s\t\t", item_list[t].type);
 			printf("%s\t\t", item_list[t].mark);
-			printf("%s\t\t", item_list[t].name);
+			printf("%s\t\t\t", item_list[t].name);
 			printf("%d\t\t", item_list[t].have);
-			printf("%d\t\t\n", item_list[t].delivery);
+			printf("%d\n", item_list[t].delivery);
 		}
 	}
-	printf("\n\n");
+//	printf("\n\n");
 }
 // Now we're gonna try to read arrays from some text files.     
