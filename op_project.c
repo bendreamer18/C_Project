@@ -6,7 +6,7 @@
 // Программа обработки списка, в которой используется массив структур.
 
 #define MAX 100
-#define LEN 20
+#define LEN 15
 // Это структура для общего списка товаров
 struct item {
 		char type[30]; // Тип товара
@@ -119,28 +119,47 @@ char daysArray[LEN];
         }
         
 //        sc(fileTypes) - количество строк в файле
+//		if(item_list[slot].type == '\0') {
+//			rewind(fileTypes);
+//		}
 		
-		
-       	while(fgets(typesArray, 6, fileTypes) != NULL)
+		int m;
+//      	while(fgets(typesArray, 6, fileTypes) != NULL)
+			for(m = 0; m < MAX; m++)
 {			
-			
- 			fgets(typesArray, 6, fileTypes);   
+			if((fgets(typesArray, 15, fileTypes) != NULL)) {
+				rewind(fileTypes);
+				rewind(fileMarks);
+				rewind(fileNames);
+				rewind(fileStock);
+				rewind(fileDays);
+			}
+ 			fgets(typesArray, 15, fileTypes);   
  			CharToOem(typesArray, typesArray); 
 			strcpy(item_list[slot].type , typesArray);
 			
-			fgets(marksArray, 6, fileMarks);   
+			
+			fgets(marksArray, 15, fileMarks);   
 			CharToOem(marksArray, marksArray); 
 			strcpy(item_list[slot].mark , marksArray);
 			
-			fgets(namesArray, 6, fileNames);   
+			
+			
+			fgets(namesArray, 15, fileNames);   
  			CharToOem(namesArray, namesArray); 
 			strcpy(item_list[slot].name , namesArray);
 			
-			fgets(stockArray, 6, fileStock);   
+			fgets(stockArray, 3, fileStock);   
  			item_list[slot].have = strtoul(stockArray, NULL, 10);
  			
- 			fgets(daysArray, 6, fileDays);   
+ 			fgets(daysArray, 2, fileDays);   
  			item_list[slot].delivery = strtoul(daysArray, NULL, 10);
+ 			
+ 			printf("%s\n", item_list[slot].type);
+			printf("%s\n", item_list[slot].mark);
+			printf("%s\n", item_list[slot].name);
+			printf("%d\n", item_list[slot].have);
+			printf("%d\n", item_list[slot].delivery);
         }
 
         fclose(fileTypes);
@@ -196,16 +215,16 @@ void delete(void)
 // Вывод списка на экран
 void list(void) 
 { 
-	printf("\n№\tТип товара\tМарка авто\tНаименование товара\tВ наличии(шт)\tСроки доставки(дн)\n\n");
+	printf("\n№\tТип товара\t\tМарка авто\t\tНаименование товара\t\tВ наличии(шт)\t\tСроки доставки(дн)\n\n");
 	register int t;
 	
 	for(t = 0; t < MAX; ++t) {
 		if(item_list[t].name[0]) {
-			printf("%d\t", t);
+			printf("%d.\t", t);
 			printf("%s\t\t", item_list[t].type);
 			printf("%s\t\t", item_list[t].mark);
 			printf("%s\t\t\t", item_list[t].name);
-			printf("%d\t\t", item_list[t].have);
+			printf("%d\t\t\t", item_list[t].have);
 			printf("%d\n", item_list[t].delivery);
 		}
 	}
