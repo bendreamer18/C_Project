@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+#include <stdbool.h>
 //#include <string.h>
 
 // Программа обработки списка, в которой используется массив структур.
 
-#define MAX 100
+#define MAX 10
 #define LEN 15
+int ger = 0, cursorLarge = 0, cursorSmall = 0;
 // Это структура для общего списка товаров
 struct item {
 		char type[30]; // Тип товара
@@ -111,64 +113,63 @@ char daysArray[LEN];
 		FILE *fileMarks = fopen("marks.txt", "r"); // файл с марками авто
 		FILE *fileNames = fopen("names.txt", "r"); // файл с наименованиями товаров
 		FILE *fileStock = fopen("stock.txt", "r"); // файл с кол-вом в наличии
-		FILE *fileDays = fopen("days.txt", "r"); // файл с днями по доставке
-			        
-        if(fileTypes == NULL)
-        {
-          puts("Возникла непредвиденная ошибка");
-        }
+		FILE *fileDays = fopen("days.txt", "r"); // файл с днями по доставке		        
+        if(fileTypes == NULL)  {puts("Возникла непредвиденная ошибка");}
         
 //        sc(fileTypes) - количество строк в файле
-//		if(item_list[slot].type == '\0') {
-//			rewind(fileTypes);
-//		}
-		
 		int m;
-//      	while(fgets(typesArray, 6, fileTypes) != NULL)
-			for(m = 0; m < MAX; m++)
-{			
-			if((fgets(typesArray, 15, fileTypes) != NULL)) {
-				rewind(fileTypes);
-				rewind(fileMarks);
-				rewind(fileNames);
-				rewind(fileStock);
-				rewind(fileDays);
+	
+		if(ger == 0) {
+			fseek( fileTypes , 0 , SEEK_SET);
+			fseek( fileMarks , 0 , SEEK_SET);
+			fseek( fileNames , 0 , SEEK_SET);
+			fseek( fileStock , 0 , SEEK_SET);
+			fseek( fileDays , 0 , SEEK_SET); 
+			ger+=2;
+		}
+			else if (ger != 0) {			
+			fseek( fileTypes , cursorLarge+15 , SEEK_SET);
+			fseek( fileMarks , cursorLarge+15 , SEEK_SET);
+			fseek( fileNames , cursorLarge+15 , SEEK_SET);
+			fseek( fileStock , cursorSmall+5 , SEEK_SET);
+			fseek( fileDays , cursorSmall+5 , SEEK_SET);
+			cursorLarge+=15;
+			cursorSmall+=5;
 			}
+	if(slot==-1) {printf("\n Список заполнен"); return;}
+	
+		
  			fgets(typesArray, 15, fileTypes);   
  			CharToOem(typesArray, typesArray); 
-			strcpy(item_list[slot].type , typesArray);
-			
+			strcpy(item_list[slot].type , typesArray);		
 			
 			fgets(marksArray, 15, fileMarks);   
 			CharToOem(marksArray, marksArray); 
-			strcpy(item_list[slot].mark , marksArray);
-			
-			
+			strcpy(item_list[slot].mark , marksArray);	
 			
 			fgets(namesArray, 15, fileNames);   
  			CharToOem(namesArray, namesArray); 
 			strcpy(item_list[slot].name , namesArray);
 			
-			fgets(stockArray, 3, fileStock);   
+			fgets(stockArray, 5, fileStock);   
  			item_list[slot].have = strtoul(stockArray, NULL, 10);
  			
- 			fgets(daysArray, 2, fileDays);   
+ 			fgets(daysArray, 5, fileDays);   
  			item_list[slot].delivery = strtoul(daysArray, NULL, 10);
  			
- 			printf("%s\n", item_list[slot].type);
-			printf("%s\n", item_list[slot].mark);
-			printf("%s\n", item_list[slot].name);
-			printf("%d\n", item_list[slot].have);
-			printf("%d\n", item_list[slot].delivery);
-        }
+  
+//			if (ger != 0) {
+//			fseek( fileTypes , 15 , SEEK_SET);
+//			fseek( fileMarks , 15 , SEEK_SET);
+//			fseek( fileNames , 15 , SEEK_SET);
+//			fseek( fileStock , 5 , SEEK_SET);
+//			fseek( fileDays , 5 , SEEK_SET);
+//			}
 
         fclose(fileTypes);
 	
 	
-	if(slot==-1) {
-		printf("\n Список заполнен");
-		return; 
-	}
+
 //	printf("Введите тип товара: ");
 //	gets(item_list[slot].type);
 //	
