@@ -2,14 +2,12 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <stdbool.h>
-//#include <string.h>
 
-// Программа обработки списка, в которой используется массив структур.
-
+// Программа обработки списка, в которой используется массив структур. МАГАЗИН АВТОЗАПЧАСТЕЙ
 #define MAX 100
 #define LEN 15
 int ger = 0, cursorLarge = 0, cursorSmall = 0, wheat = 0;
-// Это структура для общего списка товаров
+// Структура для товарной единицы
 struct item {
 		char type[30]; // Тип товара
 		char mark[30]; // Марка автомобиля
@@ -22,18 +20,19 @@ struct item {
 	void init_list(void), enter(void);
 	void delete(void), list(void);
 	int menu_select(void), find_free(void);
-	//char categories();
 	
-	// Главная функция
+// Главная функция
 int main(void) {
 	printf("МАГАЗИН АВТОЗАПЧАСТЕЙ\n\n");
+	int circle;
 	
 	char choice;
 	init_list(); // Инициализация массива структур
 	for(;;) {
 		choice = menu_select();
 		switch(choice) {
-			case 1: enter();
+			case 1: //for(circle = 0; circle < MAX; circle++) //цикл для добавления 100 товаров из файлов
+			enter();
 			break;
 			case 2: delete();
 			break;
@@ -44,25 +43,6 @@ int main(void) {
 	}
 	return 0;
 }
-	
-//	char categories() {
-//		//Эта функция выводит список категорий для запчастей.
-//		const cat_max = 6;
-//		int z;
-//		char category[cat_max][20];
-//		
-//		printf("Доступные категории товара:\n\n");
-//		
-//		strcpy(category[1], "Аккумуляторы");
-//		strcpy(category[2], "Машинные масла");
-//		strcpy(category[3], "Кузовные детали");
-//		strcpy(category[4], "Глушители и фаркопы");
-//		strcpy(category[5], "Авто лампы");
-//		for(z = 1; z < cat_max; z++) {
-//			printf("%d. %s\n", z, category[z]);
-//		}
-//		return 0;
-//	}
 	
 // Инициализация списка
 void init_list(void)
@@ -87,15 +67,7 @@ int menu_select(void)
 	} while (c < 0 || c > 4);
 	return c;
 }
-//Считаем кол-во строк в файле
-int sc(FILE *fd) {
-    int result = 1;
-    rewind(fd);
-    while (!ferror(fd) && !feof(fd)) {
-        if (fgetc(fd) == '\n') ++result;
-    }
-    return result;
-}
+
 // Добавление товара в список
 void enter(void)
  {
@@ -104,7 +76,7 @@ void enter(void)
 	
 	slot = find_free();
 
-//Функция для считывания данных из файлов и их запись в массив структур	
+//Считывание данных из файлов и их запись в массив структур	
  int upload_files() {
  	
 //Подгрузка файлов 	
@@ -120,11 +92,11 @@ char pricesArray[LEN];
 		FILE *fileStock = fopen("stock.txt", "r"); // файл с кол-вом в наличии
 		FILE *fileDays = fopen("days.txt", "r"); // файл с днями по доставке
 		FILE *filePrices = fopen("prices.txt", "r"); // файл с ценами		        
-        if(fileTypes == NULL)  {puts("Возникла непредвиденная ошибка");}
+        if(fileTypes == NULL || fileMarks == NULL || fileNames == NULL || fileStock == NULL || fileDays == NULL || filePrices == NULL)  
+		{puts("Возникла непредвиденная ошибка");}
         
-//        sc(fileTypes) - количество строк в файле
 		int m;
-// Это условие перемещает внутренний указатель файлов для последовательного чтения строк	
+// Условие, перемещающее внутренний указатель файлов для последовательного чтения строк	
 		if(ger == 0) {
 			fseek( fileTypes , 0 , SEEK_SET);
 			fseek( fileMarks , 0 , SEEK_SET);
@@ -168,30 +140,41 @@ char pricesArray[LEN];
 			fgets(pricesArray, 5, filePrices);   
  			item_list[slot].price = strtoul(pricesArray, NULL, 10);
 			  			
- 		wheat+=2;
+ 		wheat=2; 
+// С помощью переменной wheat программа определяет, какой тип таблицы выводить -
+// после ручного ввода или считывания из файлов
         fclose(fileTypes);
  		return 0;
  }
 	
-upload_files();
+//upload_files();
 	
-// Добавление товаров в массив структур вручную 
-//	printf("Введите тип товара: ");
-//	gets(item_list[slot].type);
-//	
-//	printf("Введите марку авто: ");
-//	gets(item_list[slot].mark);
-//	
-//	printf("Введите наименование товара: ");
-//	gets(item_list[slot].name);
-//	
-//	printf("Введите кол-во в наличии: ");
-//	gets(s);
-//	item_list[slot].have = strtoul(s, '\0', 10);
-//	
-//	printf("Введите дни на доставку: ");
-//	gets(s);
-//	item_list[slot].delivery = strtoul(s, '\0', 10);
+ //Добавление товаров в массив структур вручную 
+int hand_create() {
+	printf("Введите тип товара: ");
+	gets(item_list[slot].type);
+	
+	printf("Введите марку авто: ");
+	gets(item_list[slot].mark);
+	
+	printf("Введите наименование товара: ");
+	gets(item_list[slot].name);
+	
+	printf("Введите кол-во в наличии: ");
+	gets(s);
+	item_list[slot].have = strtoul(s, '\0', 10);
+	
+	printf("Введите дни на доставку: ");
+	gets(s);
+	item_list[slot].delivery = strtoul(s, '\0', 10);
+	
+	printf("Введите цену товара: ");
+	gets(s);
+	item_list[slot].price = strtoul(s, '\0', 10);
+	return 0;
+}
+
+hand_create();
 }
 // Поиск свободной структуры
 int find_free(void) 
@@ -203,7 +186,7 @@ int find_free(void)
 	if(t == MAX) return -1; // свободных структур нет
 	return t;
 }
-// Удаление адреса
+// Удаление товара
 void delete(void) 
 {
 	register int slot;
@@ -218,10 +201,10 @@ void delete(void)
 	}
 // Вывод списка на экран
 void list(void) 
-{ 	if(wheat == 2) {
-	printf("\n№\tТип товара\t\tМарка авто\tНаименование товара\t\tЦена(руб.)\t\tВ наличии(шт)\t\tСроки доставки(дн)\n\n");
-} else {
-	printf("\n№\tТип товара\t\t\tМарка авто\t\tНаименование товара\t\tЦена(руб.)\t\tВ наличии(шт)\t\tСроки доставки(дн)\n\n");
+{ 	if(wheat == 2) { // При считывании из файлов
+	printf("\n№\tТип товара\t\tМарка авто\t\tНаименование товара\t\tЦена(руб.)\t\tВ наличии(шт)\t\tСроки доставки(дн)\n\n");
+} else { // При вводе вручную
+	printf("\n№\tТип товара\t\tМарка авто\t\tНаименование товара\t\tЦена(руб.)\t\tВ наличии(шт)\t\tСроки доставки(дн)\n\n");
 }
 	
 	register int t;
@@ -230,19 +213,23 @@ void list(void)
 		if(item_list[t].name[0]) {
 			printf("%d.\t", t);
 			if(wheat == 2) {
-				printf("%s\t", item_list[t].type);
-				printf("%s", item_list[t].mark); 
-			}
-			else {
-				printf("%s\t\t\t", item_list[t].type);
+				printf("%s\t\t", item_list[t].type);
 				printf("%s\t\t", item_list[t].mark);
+				printf("%s\t\t\t", item_list[t].name);
+				printf("%d\t\t", item_list[t].price);
+				printf("%d\t\t\t", item_list[t].have);
+				printf("%d\n", item_list[t].delivery); 
 			}
-			printf("%s\t\t\t", item_list[t].name);
-			printf("%d\t\t\t", item_list[t].price);
-			printf("%d\t\t\t", item_list[t].have);
-			printf("%d\n", item_list[t].delivery);
+			else if(wheat != 2){
+				printf("%s\t\t\t", item_list[t].type);
+				printf("%s\t\t\t", item_list[t].mark);
+				printf("%s\t\t\t", item_list[t].name);
+				printf("%d\t\t", item_list[t].price);
+				printf("%d\t\t\t", item_list[t].have);
+				printf("%d\n", item_list[t].delivery);
+			}
+
 		}
 	}
 //	printf("\n\n");
-}
-// Now we're gonna try to read arrays from some text files.     
+}   
