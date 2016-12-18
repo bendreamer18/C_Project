@@ -6,7 +6,7 @@
 
 // Программа обработки списка, в которой используется массив структур.
 
-#define MAX 101
+#define MAX 100
 #define LEN 15
 int ger = 0, cursorLarge = 0, cursorSmall = 0, wheat = 0;
 // Это структура для общего списка товаров
@@ -16,6 +16,7 @@ struct item {
 		char name[40]; // Название товара
 		int have; // Количество штук в наличии
 		int delivery; // Доставка в днях
+		int price; // Цена в рублях
 	} item_list[MAX];
 	
 	void init_list(void), enter(void);
@@ -112,11 +113,13 @@ char marksArray[LEN];
 char namesArray[LEN];
 char stockArray[LEN];
 char daysArray[LEN];
+char pricesArray[LEN];
         FILE *fileTypes = fopen("types.txt", "r"); // файл с типами товаров
 		FILE *fileMarks = fopen("marks.txt", "r"); // файл с марками авто
 		FILE *fileNames = fopen("names.txt", "r"); // файл с наименованиями товаров
 		FILE *fileStock = fopen("stock.txt", "r"); // файл с кол-вом в наличии
-		FILE *fileDays = fopen("days.txt", "r"); // файл с днями по доставке		        
+		FILE *fileDays = fopen("days.txt", "r"); // файл с днями по доставке
+		FILE *filePrices = fopen("prices.txt", "r"); // файл с ценами		        
         if(fileTypes == NULL)  {puts("Возникла непредвиденная ошибка");}
         
 //        sc(fileTypes) - количество строк в файле
@@ -127,7 +130,8 @@ char daysArray[LEN];
 			fseek( fileMarks , 0 , SEEK_SET);
 			fseek( fileNames , 0 , SEEK_SET);
 			fseek( fileStock , 0 , SEEK_SET);
-			fseek( fileDays , 0 , SEEK_SET); 
+			fseek( fileDays , 0 , SEEK_SET);
+			fseek( filePrices , 0 , SEEK_SET); 
 			ger+=2;
 		}
 			else if (ger != 0) {			
@@ -136,6 +140,7 @@ char daysArray[LEN];
 			fseek( fileNames , cursorLarge+15 , SEEK_SET);
 			fseek( fileStock , cursorSmall+5 , SEEK_SET);
 			fseek( fileDays , cursorSmall+5 , SEEK_SET);
+			fseek( filePrices , cursorSmall+3 , SEEK_SET);
 			cursorLarge+=15;
 			cursorSmall+=5;
 			}
@@ -159,7 +164,10 @@ char daysArray[LEN];
  			
  			fgets(daysArray, 5, fileDays);   
  			item_list[slot].delivery = strtoul(daysArray, NULL, 10);
- 			
+			
+			fgets(pricesArray, 5, filePrices);   
+ 			item_list[slot].price = strtoul(pricesArray, NULL, 10);
+			  			
  		wheat+=2;
         fclose(fileTypes);
  		return 0;
@@ -211,9 +219,9 @@ void delete(void)
 // Вывод списка на экран
 void list(void) 
 { 	if(wheat == 2) {
-	printf("\n№\tТип товара\t\tМарка авто\tНаименование товара\t\tВ наличии(шт)\t\tСроки доставки(дн)\n\n");
+	printf("\n№\tТип товара\t\tМарка авто\tНаименование товара\t\tЦена(руб.)\t\tВ наличии(шт)\t\tСроки доставки(дн)\n\n");
 } else {
-	printf("\n№\tТип товара\t\t\tМарка авто\t\tНаименование товара\t\tВ наличии(шт)\t\tСроки доставки(дн)\n\n");
+	printf("\n№\tТип товара\t\t\tМарка авто\t\tНаименование товара\t\tЦена(руб.)\t\tВ наличии(шт)\t\tСроки доставки(дн)\n\n");
 }
 	
 	register int t;
@@ -223,13 +231,14 @@ void list(void)
 			printf("%d.\t", t);
 			if(wheat == 2) {
 				printf("%s\t", item_list[t].type);
-				printf("%s\t", item_list[t].mark); //хуета с отступами при вызове функции
+				printf("%s", item_list[t].mark); 
 			}
 			else {
 				printf("%s\t\t\t", item_list[t].type);
-				printf("%s\t\t\t", item_list[t].mark);
+				printf("%s\t\t", item_list[t].mark);
 			}
 			printf("%s\t\t\t", item_list[t].name);
+			printf("%d\t\t\t", item_list[t].price);
 			printf("%d\t\t\t", item_list[t].have);
 			printf("%d\n", item_list[t].delivery);
 		}
