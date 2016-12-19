@@ -31,7 +31,7 @@ int main(void) {
 	for(;;) {
 		choice = menu_select();
 		switch(choice) {
-			case 1: //for(circle = 0; circle < MAX; circle++) //цикл для добавления 100 товаров из файлов
+			case 1: for(circle = 0; circle < MAX; circle++) //цикл для добавления 100 товаров из файлов
 			enter();
 			break;
 			case 2: delete();
@@ -95,7 +95,6 @@ char pricesArray[LEN];
         if(fileTypes == NULL || fileMarks == NULL || fileNames == NULL || fileStock == NULL || fileDays == NULL || filePrices == NULL)  
 		{puts("Возникла непредвиденная ошибка");}
         
-		int m;
 // Условие, перемещающее внутренний указатель файлов для последовательного чтения строк	
 		if(ger == 0) {
 			fseek( fileTypes , 0 , SEEK_SET);
@@ -147,7 +146,7 @@ char pricesArray[LEN];
  		return 0;
  }
 	
-//upload_files();
+upload_files();
 	
  //Добавление товаров в массив структур вручную 
 int hand_create() {
@@ -174,7 +173,7 @@ int hand_create() {
 	return 0;
 }
 
-hand_create();
+//hand_create();
 }
 // Поиск свободной структуры
 int find_free(void) 
@@ -231,5 +230,4 @@ void list(void)
 
 		}
 	}
-//	printf("\n\n");
 }   
